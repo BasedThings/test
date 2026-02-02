@@ -1,6 +1,5 @@
 import { EventEmitter } from 'events';
 import pLimit from 'p-limit';
-import { Prisma } from '@prisma/client';
 
 import { env } from '../../config/env.js';
 import { prisma } from '../../config/database.js';
@@ -326,11 +325,11 @@ export class IngestionOrchestrator extends EventEmitter {
           noPrice: 1 - (orderbook.midpoint || orderbook.bestBid || orderbook.bestAsk || 0.5),
           lastFetchedAt: orderbook.timestamp,
           fetchLatencyMs: orderbook.latencyMs,
-          orderBookDepth: {
+          orderBookDepth: JSON.parse(JSON.stringify({
             bids: orderbook.bids.slice(0, 10).map(b => ({ price: b.price, size: b.size })),
             asks: orderbook.asks.slice(0, 10).map(a => ({ price: a.price, size: a.size })),
             timestamp: orderbook.timestamp.toISOString(),
-          } as Prisma.InputJsonValue,
+          })),
         },
       });
     }
