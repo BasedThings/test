@@ -65,7 +65,7 @@ export const getMatches: RequestHandler = async (req, res, next) => {
     ]);
 
     res.json({
-      data: matches.map((m) => ({
+      data: matches.map((m: typeof matches[number]) => ({
         ...m,
         semanticScore: m.semanticScore.toNumber(),
         resolutionScore: m.resolutionScore.toNumber(),

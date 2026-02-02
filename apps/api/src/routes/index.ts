@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, type IRouter } from 'express';
 
 import { getHealth, getStatus, getPlatformHealth } from '../controllers/healthController.js';
 import { getMarkets, getMarketById, getMarketOrderbook } from '../controllers/marketsController.js';
@@ -20,7 +20,7 @@ import {
   calculateVig,
 } from '../controllers/calculatorController.js';
 
-const router = Router();
+const router: IRouter = Router();
 
 // ============== Health & Status ==============
 router.get('/health', getHealth);

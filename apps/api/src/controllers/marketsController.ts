@@ -86,7 +86,7 @@ export const getMarkets: RequestHandler = async (req, res, next) => {
     ]);
 
     const response = {
-      data: markets.map((m) => ({
+      data: markets.map((m: typeof markets[number]) => ({
         ...m,
         yesPrice: m.yesPrice.toNumber(),
         noPrice: m.noPrice.toNumber(),
@@ -161,7 +161,7 @@ export const getMarketById: RequestHandler = async (req, res, next) => {
         feeRate: market.feeRate.toNumber(),
         minOrderSize: market.minOrderSize.toNumber(),
         tickSize: market.tickSize.toNumber(),
-        priceHistory: market.priceHistory.map((p) => ({
+        priceHistory: market.priceHistory.map((p: typeof market.priceHistory[number]) => ({
           timestamp: p.timestamp.toISOString(),
           yesPrice: p.yesPrice.toNumber(),
           noPrice: p.noPrice.toNumber(),

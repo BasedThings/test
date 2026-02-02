@@ -83,15 +83,15 @@ export const getStatus: RequestHandler = async (_req, res) => {
   const stats = ingestionOrchestrator.getStats();
 
   const polymarketCount = marketCounts.find(
-    (c) => c.platform === 'POLYMARKET'
+    (c: typeof marketCounts[number]) => c.platform === 'POLYMARKET'
   )?._count.id ?? 0;
 
   const kalshiCount = marketCounts.find(
-    (c) => c.platform === 'KALSHI'
+    (c: typeof marketCounts[number]) => c.platform === 'KALSHI'
   )?._count.id ?? 0;
 
   const predictitCount = marketCounts.find(
-    (c) => c.platform === 'PREDICTIT'
+    (c: typeof marketCounts[number]) => c.platform === 'PREDICTIT'
   )?._count.id ?? 0;
 
   const confirmedMatches = await prisma.marketMatch.count({
@@ -125,7 +125,7 @@ export const getStatus: RequestHandler = async (_req, res) => {
     },
     arbitrage: {
       activeCount: activeOpps.length,
-      topOpportunities: activeOpps.map((o) => ({
+      topOpportunities: activeOpps.map((o: typeof activeOpps[number]) => ({
         id: o.id,
         spread: o.netSpread.toNumber(),
         confidence: o.confidenceScore.toNumber(),

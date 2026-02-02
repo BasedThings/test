@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events';
 import pLimit from 'p-limit';
+import { Prisma } from '@prisma/client';
 
 import { env } from '../../config/env.js';
 import { prisma } from '../../config/database.js';
@@ -164,7 +165,7 @@ export class IngestionOrchestrator extends EventEmitter {
       take: 100, // Top 100 most active
     });
 
-    const tickers = kalshiMarkets.map((m) => m.externalId);
+    const tickers = kalshiMarkets.map((m: typeof kalshiMarkets[number]) => m.externalId);
     kalshiClient.startPolling(tickers, env.INGESTION_INTERVAL_MS);
 
     kalshiClient.on('orderbook', async (event) => {
@@ -275,7 +276,7 @@ export class IngestionOrchestrator extends EventEmitter {
         endDate: market.endDate,
         resolutionSource: market.resolutionSource,
         resolutionRules: market.resolutionRules,
-        volume: market.volume,
+        volumeTotal: market.volume,
         liquidity: market.liquidity,
         feeRate: market.feeRate,
         minOrderSize: market.minOrderSize,
@@ -293,7 +294,7 @@ export class IngestionOrchestrator extends EventEmitter {
         category: market.category,
         endDate: market.endDate,
         resolutionRules: market.resolutionRules,
-        volume: market.volume,
+        volumeTotal: market.volume,
         liquidity: market.liquidity,
         sourceUrl: market.sourceUrl,
         lastFetchedAt: market.lastUpdated,
@@ -326,10 +327,10 @@ export class IngestionOrchestrator extends EventEmitter {
           lastFetchedAt: orderbook.timestamp,
           fetchLatencyMs: orderbook.latencyMs,
           orderBookDepth: {
-            bids: orderbook.bids.slice(0, 10),
-            asks: orderbook.asks.slice(0, 10),
+            bids: orderbook.bids.slice(0, 10).map(b => ({ price: b.price, size: b.size })),
+            asks: orderbook.asks.slice(0, 10).map(a => ({ price: a.price, size: a.size })),
             timestamp: orderbook.timestamp.toISOString(),
-          },
+          } as Prisma.InputJsonValue,
         },
       });
     }

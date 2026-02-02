@@ -1,4 +1,6 @@
-import Decimal from 'decimal.js';
+import DecimalJS from 'decimal.js';
+import { Decimal } from '@prisma/client/runtime/library';
+import { Prisma } from '@prisma/client';
 
 import { prisma } from '../../config/database.js';
 import { getRedis } from '../../config/redis.js';
@@ -297,7 +299,7 @@ export class ArbitrageDetector {
     const combinedSlippage = (maxBuySize.slippage + maxSellSize.slippage) / 2;
 
     // Calculate net profit for max executable size
-    const netProfit = new Decimal(netSpreadPerShare)
+    const netProfit = new DecimalJS(netSpreadPerShare)
       .minus(combinedSlippage)
       .times(maxExecutableSize)
       .toNumber();
@@ -569,7 +571,7 @@ export class ArbitrageDetector {
     await prisma.arbitrageOpportunity.create({
       data: {
         matchId: opp.matchId,
-        strategy: opp.strategy as unknown as Record<string, unknown>,
+        strategy: opp.strategy as Prisma.InputJsonValue,
         grossSpread: opp.profitAnalysis.grossSpread,
         netSpread: opp.profitAnalysis.netProfit / opp.profitAnalysis.maxExecutableSize,
         spreadPercentage: opp.profitAnalysis.roi,
@@ -586,8 +588,8 @@ export class ArbitrageDetector {
         confidenceScore: opp.confidence.overall,
         freshnessScore: opp.confidence.freshness,
         consistencyScore: opp.confidence.matchQuality,
-        confidenceFactors: opp.confidence as unknown as Record<string, unknown>,
-        executionSteps: opp.executionPlan as unknown as Record<string, unknown>[],
+        confidenceFactors: opp.confidence as Prisma.InputJsonValue,
+        executionSteps: opp.executionPlan as unknown as Prisma.InputJsonValue,
         sourceDataAge: opp.confidence.dataAgeMs,
         targetDataAge: opp.confidence.dataAgeMs,
         status: 'ACTIVE',

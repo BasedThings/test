@@ -110,7 +110,7 @@ export const getArbitrageOpportunities: RequestHandler = async (req, res, next) 
     ]);
 
     const response = {
-      data: opportunities.map((opp) => ({
+      data: opportunities.map((opp: typeof opportunities[number]) => ({
         id: opp.id,
         matchId: opp.matchId,
         strategy: opp.strategy,
@@ -276,7 +276,7 @@ export const getArbitrageById: RequestHandler = async (req, res, next) => {
             question: opportunity.match.sourceMarket.question,
             sourceUrl: opportunity.match.sourceMarket.sourceUrl,
             resolutionRules: opportunity.match.sourceMarket.resolutionRules,
-            priceHistory: opportunity.match.sourceMarket.priceHistory.map((p) => ({
+            priceHistory: opportunity.match.sourceMarket.priceHistory.map((p: typeof opportunity.match.sourceMarket.priceHistory[number]) => ({
               timestamp: p.timestamp.toISOString(),
               yesPrice: p.yesPrice.toNumber(),
               yesBid: p.yesBid?.toNumber(),
@@ -292,7 +292,7 @@ export const getArbitrageById: RequestHandler = async (req, res, next) => {
             question: opportunity.match.targetMarket.question,
             sourceUrl: opportunity.match.targetMarket.sourceUrl,
             resolutionRules: opportunity.match.targetMarket.resolutionRules,
-            priceHistory: opportunity.match.targetMarket.priceHistory.map((p) => ({
+            priceHistory: opportunity.match.targetMarket.priceHistory.map((p: typeof opportunity.match.targetMarket.priceHistory[number]) => ({
               timestamp: p.timestamp.toISOString(),
               yesPrice: p.yesPrice.toNumber(),
               yesBid: p.yesBid?.toNumber(),

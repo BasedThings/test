@@ -1,14 +1,14 @@
-import Redis from 'ioredis';
+import IORedis from 'ioredis';
 
 import { env } from './env.js';
 
-let redis: Redis | null = null;
+let redis: IORedis | null = null;
 
-export function getRedis(): Redis {
+export function getRedis(): IORedis {
   if (!redis) {
-    redis = new Redis(env.REDIS_URL, {
+    redis = new IORedis(env.REDIS_URL, {
       maxRetriesPerRequest: 3,
-      retryStrategy: (times) => {
+      retryStrategy: (times: number) => {
         if (times > 3) {
           console.error('Redis connection failed after 3 retries');
           return null;
@@ -21,7 +21,7 @@ export function getRedis(): Redis {
       console.log('Redis connected successfully');
     });
 
-    redis.on('error', (error) => {
+    redis.on('error', (error: Error) => {
       console.error('Redis connection error:', error);
     });
   }
